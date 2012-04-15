@@ -7,10 +7,10 @@
     <script type='text/javascript' src='../arcpiegraph.js'></script>
 
     <style>
-    #chart8 .ag-color-0{
+    #chart8 .ag-color-3{
         fill: #000 !important;
     }
-    .ag-arc-grey:hover{
+    #chart8 .ag-arc-grey:hover{
         fill: #aaa !important;
     }
     </style>
@@ -55,10 +55,11 @@ function onload(){
             ]
     }
     ag = new ArcPieGraph(ctx)
-
 }
-    </script>
-    <div id="chart5" style="width:600px; height:300px; margin:auto;"> </div>
-    <div id="chart8" style="width:600px; height:300px; margin:auto;"> </div>
+</script>
+<div style="width:600px; height:300px; margin:auto;">
+    <div id="chart5"> </div>
+    <div id="chart8"> </div>
+</div>
 </body>
 </html>
