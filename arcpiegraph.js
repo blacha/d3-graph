@@ -101,6 +101,11 @@ ArcPieGraph.prototype = {
         this.vis.selectAll('g').data(this.data)
             .enter().append('path')
             .attr('d', arc_grey)
+            .attr('id', function(d, i){
+                if (d.id === undefined)
+                    return me.node.substring(1, me.node.length) + '-arc-grey-' + i;
+                return d.id + '-grey';
+            })
             .attr('class', function(d, i) { return 'ag-arc ag-arc-grey ag-color-grey-' + i; })
             .style('fill', me.arc.grey_color);
     },
