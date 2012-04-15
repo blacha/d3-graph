@@ -11,7 +11,7 @@ ArcGraph = function(ctx){
     // Raidus of the circle
     this.r = Math.min(this.w, this.h) / 2;
 
-    this.sort_direction = ctx.sort === undefined ? 1 : ctx.sort_direction; // highest to lowest
+    this.sort_direction = ctx.sort_direction === undefined ? 1 : ctx.sort_direction; // highest to lowest
 
     // Arc config
     this.arc = ctx.arc || {};
