@@ -10,8 +10,8 @@
     #chart8 .ag-color-3{
         fill: #000 !important;
     }
-    #chart8 .ag-arc-grey:hover{
-        fill: #aaa !important;
+    .hover{
+        fill: #888 !important;
     }
     </style>
 </head>
@@ -55,6 +55,15 @@ function onload(){
             ]
     }
     ag = new ArcPieGraph(ctx)
+
+    // simple hover effect for chaning the grey color of the arc
+    d3.selectAll('#chart8 .ag-arc-color').on('mouseover', function(d, i){
+        d3.select('#chart8 .ag-color-grey-' + i).classed('hover', true)
+    })
+
+    d3.selectAll('#chart8 .ag-arc-color').on('mouseout', function(d, i){
+        d3.select('#chart8 .ag-color-grey-' + i).classed('hover', false)
+    })
 }
 </script>
 <div style="width:600px; height:300px; margin:auto;">

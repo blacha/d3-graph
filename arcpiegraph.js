@@ -83,7 +83,7 @@ ArcPieGraph.prototype = {
                     return me.node.substring(1, me.node.length) + '-arc-' + i;
                 return d.id;
             })
-            .attr('class', function(d, i) { return 'ag-arc ag-color-' + i; })
+            .attr('class', function(d, i) { return 'ag-arc ag-arc-color ag-color-' + i; })
             .style('fill', function(d, i) { return me.colors[i]; });
 
         var arc_grey = d3.svg.arc()
