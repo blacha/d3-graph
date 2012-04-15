@@ -43,6 +43,7 @@ ArcGraph = function(ctx){
     this.arc.internal = this.arc.internal || 0.25; // amount of space to be left as white space
     this.arc.offset_x = this.arc.offset_x || 5; // x offset of the graph
     this.arc.offset_y = this.arc.offset_y || 0; // y offset of the graph
+    this.arc.margin = this.arg.margin || 1; // margin between the arcs
 
     // Key config
     this.key = ctx.key || {};
@@ -155,7 +156,7 @@ ArcGraph.prototype = {
     },
 
     innerRadius: function(i){
-        return this.r - this.arc.width * i - this.arc.width + 1;
+        return this.r - this.arc.width * i - this.arc.width + this.arc.margin;
     },
 
     outerRadius: function(i){
@@ -177,8 +178,6 @@ ArcGraph.prototype = {
             return undefined;
         }
 
-        angle = parseInt(deg,10) * Math.PI / 180;
-        console.log(angle)
-        return angle;
+        return parseInt(deg,10) * Math.PI / 180;
     }
 };
