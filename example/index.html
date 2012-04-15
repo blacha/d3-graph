@@ -8,7 +8,10 @@
 
     <style>
     #chart8-arc-0 {
-        stroke: #000;
+        fill: #000 !important;
+    }
+    #chart8 .ag-color-0{
+        fill: #000 !important;
     }
     </style>
 </head>
@@ -19,8 +22,10 @@
         var ctx5 = {
             width: 600, // width in pixels
             height: 250, // height in pixels
-            description_height: 27.5, // Height of each description element (including the underline, header and description) (in pixels)
-            internal_whitespace: 0.4, // Percent of space to keep as white in the internal circle (in percentage 0.4 = 40%)
+            key: {'height': 27.5 }, // Height of each description element (including the underline, header and description) (in pixels)
+            arc: {
+                'internal' : 0.4, // Percent of space to keep as white in the internal circle (in percentage 0.4 = 40%)
+                },
             node: '#chart5', // id of the element to put the chart in
             data: [
                     {'id':'test-1', 'value': 30, 'value2': '001', 'description': 'Sed commodo velit et lorem posuere.'},
