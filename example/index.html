@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Arc Graph</title>
+
+    <script type='text/javascript' src='../d3.v2.min.js'></script>
+    <script type='text/javascript' src='../arcpiegraph.js'></script>
+    <script type='text/javascript' src='../arcgraph.js'></script>
+
+    <style>
+    #chart8 .ag-color-0{
+        fill: #000 !important;
+    }
+    #chart8 .ag-arc-grey:hover{
+        fill: #aaa !important;
+    }
+    </style>
+</head>
+<body onload='onload()'>
+
+<script type="text/javascript">
+function onload(){
+    var ctx5 = {
+        width: 200, // width in pixels
+        height: 200, // height in pixels
+        arc: {
+            'internal' : 0, // Percent of space to keep as white in the internal circle
+            'margin' : 5, // pixels of margin to use between the arcs
+            'width' : 35, // width of the arc
+            'start_angle': 180 // angle to start the graph at
+            },
+        sort: false, // dont sort the data
+        node: '#arcpie', // id of the element to put the chart in
+        data: [
+                {'id':'test-1', 'value': 25},
+                {'id':'test-2', 'value': 10},
+                {'id':'test-3', 'value': 80},
+            ]
+    }
+    ag5 = new ArcPieGraph(ctx5)
+
+    var ctx = {
+        width: 600, // width in pixels
+        height: 250, // height in pixels
+        key: {'height': 27.5 }, // Height of each description element (including the underline, header and description) (in pixels)
+        arc: {
+            'internal' : 0.4, // Percent of space to keep as white in the internal circle (in percentage 0.4 = 40%)
+            },
+        node: '#arcgraph', // id of the element to put the chart in
+        data: [
+                {'id':'test-1', 'value': 30, 'value2': '001', 'description': 'Sed commodo velit et lorem posuere.'},
+                {'id':'test-2', 'value': 50, 'value2': '002', 'description': 'Cras a ipsum ut ligula interdum sagittis ac quis.'},
+                {'id':'test-3', 'value': 75, 'value2': '003', 'description': 'Duis dapibus arcu quis mi venenatis vulputate.'},
+                {'id':'test-4', 'value': 90, 'value2': '004', 'description': 'Aliquam bibendum sem facilisis lorem varius.'},
+                {'id':'test-5', 'value': 100, 'value2': '005', 'description': 'Mauris vel diam odio, non pretium sem.'},
+            ]
+    }
+    ag = new ArcGraph(ctx)
+
+}
+    </script>
+    <div style="width:600px; height:300px; margin:auto;">
+        <p> <a href="arcpiegraph.html"> Arc Pie Graph </a></p>
+        <div id="arcpie" style=""> </div>
+        <p> <a href="arcgraph.html"> Arc Graph </a></p>
+        <div id="arcgraph" style="width:600px; height:300px; margin:auto;"> </div>
+    </div>
+</body>
+</html>
