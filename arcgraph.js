@@ -9,7 +9,7 @@ ArcGraph = function(ctx){
     this.node =  ctx.node;
 
     // Raidus of the circle
-    this.r = Math.min(this.w, this.h) / 2;
+    this.r = Math.min(this.w, this.h) / 2.1;
 
     this.sort_direction = ctx.sort_direction === undefined ? 1 : ctx.sort_direction; // highest to lowest
 
@@ -18,8 +18,8 @@ ArcGraph = function(ctx){
     this.arc.width = this.arc.width || 20;
     this.arc.end_angle = this.deg_to_rad(this.arc.end_angle) || 1.66 * Math.PI; // end 3/4 around
     this.arc.start_angle = this.deg_to_rad(this.arc.start_angle) || Math.PI; // Start at the bottom
-    this.arc.internal = this.arc.internal || 0.25; // amount of space to be left as white space
-    this.arc.offset_x = this.arc.offset_x || 5; // x offset of the graph
+    this.arc.internal = this.arc.internal  === undefined ? 0.15 : this.arc.internal; // amount of space to be left as white space
+    this.arc.offset_x = this.arc.offset_x || 0; // x offset of the graph
     this.arc.offset_y = this.arc.offset_y || 0; // y offset of the graph
     this.arc.margin = this.arc.margin || 1; // margin between the arcs
 
