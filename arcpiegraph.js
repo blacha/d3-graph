@@ -1,4 +1,3 @@
-
 ArcPieGraph = function(ctx){
     if (ctx.width === undefined){ throw Error('No width given.'); }
     this.w = ctx.width;

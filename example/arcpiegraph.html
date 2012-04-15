@@ -24,12 +24,12 @@ function onload(){
         width: 200, // width in pixels
         height: 200, // height in pixels
         arc: {
-            'internal' : 0, // Percent of space to keep as white in the internal circle (in percentage 0.4 = 40%)
+            'internal' : 0.25, // Percent of space to keep as white in the internal circle
             'margin' : 5, // pixels of margin to use between the arcs
-            'width' : 35,
-            'start_angle': 360
+            'width' : 35, //width of the arc
+            'start_angle': 0
             },
-        sort: false,
+        sort: false, // dont reorder the data
         node: '#chart5', // id of the element to put the chart in
         data: [
                 {'id':'test-1', 'value': 25},
