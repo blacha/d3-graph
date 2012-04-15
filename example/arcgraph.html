@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Arc Graph</title>
+
+    <script type='text/javascript' src='../d3.v2.min.js'></script>
+    <script type='text/javascript' src='../arcgraph.js'></script>
+
+    <style>
+    #chart8-arc-0 {
+        fill: #000 !important;
+    }
+    #chart8 .ag-color-0{
+        fill: #000 !important;
+    }
+    </style>
+</head>
+<body onload='onload()'>
+
+<script type="text/javascript">
+    function onload(){
+        var ctx5 = {
+            width: 600, // width in pixels
+            height: 250, // height in pixels
+            key: {'height': 27.5 }, // Height of each description element (including the underline, header and description) (in pixels)
+            arc: {
+                'internal' : 0.4, // Percent of space to keep as white in the internal circle (in percentage 0.4 = 40%)
+                },
+            node: '#chart5', // id of the element to put the chart in
+            data: [
+                    {'id':'test-1', 'value': 30, 'value2': '001', 'description': 'Sed commodo velit et lorem posuere.'},
+                    {'id':'test-2', 'value': 50, 'value2': '002', 'description': 'Cras a ipsum ut ligula interdum sagittis ac quis.'},
+                    {'id':'test-3', 'value': 75, 'value2': '003', 'description': 'Duis dapibus arcu quis mi venenatis vulputate.'},
+                    {'id':'test-4', 'value': 90, 'value2': '004', 'description': 'Aliquam bibendum sem facilisis lorem varius.'},
+                    {'id':'test-5', 'value': 100, 'value2': '005', 'description': 'Mauris vel diam odio, non pretium sem.'},
+                ]
+        }
+
+        ag5 = new ArcGraph(ctx5)
+
+        var ctx = {
+            width: 600,
+            height: 250,
+            sort_direction: -1, // dont sort
+            node: '#chart8',
+            data: [
+                    {'value': 25, 'value2': '001', 'description': 'Sed commodo velit et lorem posuere.'},
+
+                    {'value': 70, 'value2': '003', 'description': 'Duis dapibus arcu quis mi venenatis vulputate.'},
+                    {'value': 115, 'value2': '007', 'description': 'Nullam ac lacus vitae nisl varius sagittis.'},
+                    {'value': 80, 'value2': '004', 'description': 'Aliquam bibendum sem facilisis lorem varius.'},
+                    {'value': 100, 'value2': '005', 'description': 'Mauris vel diam odio, non pretium sem.'},
+                    {'value': 110, 'value2': '006', 'description': 'Integer pretium risus id nibh laoreet malesuada.'},
+
+                    {'value': 120, 'value2': '008', 'description': 'Nam aliquam varius orci, et placerat velit aliquam.'},
+                    {'value': 50, 'value2': '002', 'description': 'Cras a ipsum ut ligula interdum sagittis ac quis.'},
+                ]
+        }
+
+        ag = new ArcGraph(ctx)
+    }
+    </script>
+    <div id="chart5" style="width:600px; height:300px; margin:auto;"> </div>
+    <div id="chart8" style="width:600px; height:300px; margin:auto;"> </div>
+</body>
+</html>
