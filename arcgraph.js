@@ -1,27 +1,3 @@
-/**
- * Options for the intilization of ArcGraph
- * Mandatory:
- * ctx.width - Width (pixels)
- * ctx.height - Height (pixels).
- * ctx.data - data to graph.
- * ctx.node - the location to insert the graph using the d3 selector syntax, eg '#chart'
-
- * Optional:
- * ctx.internal_whitespace - reserved space in the inside of the circle (in percent, 0.4 = 40% | default 75%)
- * ctx.max_angle - the angle the biggest element will finish at (between 0-2, 0 being no angle, 1 = 1/2 circle, 2 = full circle | default 1.66).\
- * ctx.arc_width - width of the arcs in the graph (pixels | default 20)
- *               - this attribute will be adjusted if the arc_width is too large to be displayed for the number of elements
-
- * ctx.description_heigth - height of the description header/line/description element (pixels | defualt 50px)
- *                        - this attribute will be adjusted if the height is too large to be displayed.
- *
- * ctx.get_color - function to generate colors given the data and index of the element
- * ctx.color_list - list of colors to use to color the graph.
- * ctx.line_color - color of the line under the description.
- * ctx.description_color - color of the font for the description.
- */
-
-
 ArcGraph = function(ctx){
     if (ctx.width === undefined){ throw Error('No width given.'); }
     this.w = ctx.width;
@@ -35,6 +11,8 @@ ArcGraph = function(ctx){
     // Raidus of the circle
     this.r = Math.min(this.w, this.h) / 2;
 
+    this.sort_direction = ctx.sort === undefined ? 1 : ctx.sort_direction; // highest to lowest
+
     // Arc config
     this.arc = ctx.arc || {};
     this.arc.width = this.arc.width || 20;
@@ -43,7 +21,7 @@ ArcGraph = function(ctx){
     this.arc.internal = this.arc.internal || 0.25; // amount of space to be left as white space
     this.arc.offset_x = this.arc.offset_x || 5; // x offset of the graph
     this.arc.offset_y = this.arc.offset_y || 0; // y offset of the graph
-    this.arc.margin = this.arg.margin || 1; // margin between the arcs
+    this.arc.margin = this.arc.margin || 1; // margin between the arcs
 
     // Key config
     this.key = ctx.key || {};
@@ -63,8 +41,15 @@ ArcGraph.prototype = {
 
     update_data: function(data){
         if (data.length === undefined || data.length === 0) { return; }
-        this.data = data.sort(this._compare_node);
-        var max = this.data[0].value;
+
+        var max;
+        if (this.sort_direction === 1){
+            this.data = data.sort(this._compare_node);
+            max = this.data[0].value;
+        } else {
+            this.data = data.sort(this._compare_node_reverse);
+            max = this.data[this.data.length - 1].value;
+        }
 
         // Check to see if the arc width is too big, if it is reduce the width of the arcs
         if (this.data.length * this.arc.width > this.r * (1 - this.arc.internal)){
@@ -152,7 +137,7 @@ ArcGraph.prototype = {
     },
 
     descriptionLocation: function(i){
-        return this.r - this.key.height * (this.data.length - 1  - i);
+        return this.r - this.key.height * (this.data.length - 1 - i);
     },
 
     innerRadius: function(i){
@@ -169,6 +154,16 @@ ArcGraph.prototype = {
         }
         if (b.value > a.value){
             return 1;
+        }
+        return 0;
+    },
+
+    _compare_node_reverse: function(a, b){
+        if (a.value > b.value){
+            return 1;
+        }
+        if (b.value > a.value){
+            return -1;
         }
         return 0;
     },
