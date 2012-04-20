@@ -86,7 +86,7 @@ ArcGraph.prototype = {
                     return me.node.substring(1, me.node.length) + '-arc-' + i;
                 return d.id;
             })
-            .attr('class', function(d, i) { return 'ag-arc ag-color-' + i; })
+            .attr('class', function(d, i) { return 'ag-arc ag-color ag-group-' + i; })
             .style('fill', function(d, i) { return me.colors[i]; });
 
         // Add the values next to the arcs
@@ -97,7 +97,7 @@ ArcGraph.prototype = {
                 .attr('y', function(d,i) { return me.outerRadius(i);  } )
                 .attr('dy',  arc_font_size * -0.2)
                 .attr("text-anchor", "start")
-                .attr('class',  function(d, i) { return 'ag-arc-value ag-color-' + i; })
+                .attr('class',  function(d, i) { return 'ag-arc-value ag-color ag-group-' + i; })
                 .style("fill",  function(d, i) { return me.colors[i]; })
                 .style('font-size',  arc_font_size + 'px')
                 .text(function(d, i) { return d.value; });
@@ -111,7 +111,7 @@ ArcGraph.prototype = {
                 .style("fill",  function(d, i) { return me.colors[i]; })
                 .style('font-size',  description_header_font + 'px')
                 .style('font-weight', 'bold')
-                .attr('class', function(d, i) { return 'ag-header-value ag-color-' + i; })
+                .attr('class', function(d, i) { return 'ag-header-value ag-color ag-group-' + i; })
                 .text(function(d, i) { return d.value2; });
 
         // Add a line under the text
@@ -132,7 +132,7 @@ ArcGraph.prototype = {
                 .attr('y', function(d, i){  return me.descriptionLocation(i) - description_header_font / 3; } )
                 .style("fill", this.key.text_color )
                 .style('font-size',  description_font + 'px')
-                .attr('class', 'ag-header-description')
+                .attr('class', function(d, i) { return 'ag-header-description ag-color ag-group-' + i; })
                 .text( function(d){ return d.description; });
     },
 
