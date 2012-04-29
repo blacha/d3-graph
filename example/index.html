@@ -6,6 +6,7 @@
     <script type='text/javascript' src='../d3.v2.min.js'></script>
     <script type='text/javascript' src='../arcpiegraph.js'></script>
     <script type='text/javascript' src='../arcgraph.js'></script>
+    <script type='text/javascript' src='../roundedbargraph.js'></script>
 
     <style>
     #chart8 .ag-color-0{
@@ -16,12 +17,58 @@
     }
     </style>
 </head>
-<body onload='onload()'>
+<body style="">
 
-<script type="text/javascript">
-function onload(){
-    var ctx5 = {
-        width: 200, // width in pixels
+
+    <div style="width:600px; margin:auto;">
+        <p> <a href="roundedbargraph.html"> Rounded Bar Graph </a></p>
+        <div id="roundedbar" style=""> </div>
+    </div>
+    <div style="width:600px; margin:auto;">
+        <p> <a href="arcpiegraph.html"> Arc Pie Graph </a></p>
+        <div id="arcpie" style=""> </div>
+    </div>
+
+    <div style="width:600px; margin:auto;">
+        <p> <a href="arcgraph.html"> Arc Graph </a></p>
+        <div id="arcgraph" style=""> </div>
+    </div>
+
+
+    <script type="text/javascript">
+    var rounded = {
+        width: 600, // width in pixels
+        height: 300, // height in pixels
+        bar: {
+            'margin' : 5, // pixels between bars
+            'width': 60, // width of bars
+            'rounding': 10 // pixels for rounding effect
+        },
+        node: '#roundedbar', // id of the element to put the chart in
+        data: [
+                {'value': 90.24, 'series': '2001'},
+                {'value': 93.57, 'series': '2002'},
+                {'value': 117.39, 'series': '2003'},
+                {'value': 212.24, 'series': '2004'},
+                {'value': 206.94, 'series': '2005'},
+                {'value': 253.10, 'series': '2006'},
+                {'value': 399.33, 'series': '2007'},
+                {'value': 556.35, 'series': '2008'},
+                {'value': 500.60, 'series': '2009'},
+                {'value': 549.04, 'series': '2010'},
+                {'value': 715.06, 'series': '2011'},
+            ],
+
+        line: {
+            type:'const',
+            const_val: '350'
+        }
+    }
+    rbg = new RoundedBarGraph(rounded)
+
+
+    var arcpie = {
+        width: 400, // width in pixels
         height: 200, // height in pixels
         arc: {
             'internal' : 0.25, // Percent of space to keep as white in the internal circle
@@ -37,14 +84,14 @@ function onload(){
                 {'id':'test-3', 'value': 80},
             ]
     }
-    ag5 = new ArcPieGraph(ctx5)
+    apg = new ArcPieGraph(arcpie)
 
-    var ctx = {
+    var arcgraph = {
         width: 600, // width in pixels
-        height: 250, // height in pixels
-        key: {'height': 27.5 }, // Height of each description element (including the underline, header and description) (in pixels)
+        height: 200, // height in pixels
+        key: {'height': 25 }, // Height of each description element (including the underline, header and description) (in pixels)
         arc: {
-            'internal' : 0.4, // Percent of space to keep as white in the internal circle (in percentage 0.4 = 40%)
+            'internal' : 0.25, // Percent of space to keep as white in the internal circle (in percentage 0.4 = 40%)
             },
         node: '#arcgraph', // id of the element to put the chart in
         data: [
@@ -55,15 +102,38 @@ function onload(){
                 {'id':'test-5', 'value': 100, 'value2': '005', 'description': 'Mauris vel diam odio, non pretium sem.'},
             ]
     }
-    ag = new ArcGraph(ctx)
-
-}
+    ag = new ArcGraph(arcgraph)
     </script>
-    <div style="width:600px; height:300px; margin:auto;">
-        <p> <a href="arcpiegraph.html"> Arc Pie Graph </a></p>
-        <div id="arcpie" style=""> </div>
-        <p> <a href="arcgraph.html"> Arc Graph </a></p>
-        <div id="arcgraph" style="width:600px; height:300px; margin:auto;"> </div>
-    </div>
+
+
+    <script>
+
+    /*
+     * Hover effect for segment graph
+     */
+    d3.selectAll('#segment .spg-arc').on('mouseover', function(d, i){
+        d3.selectAll('#segment .spg-color').style('opacity', '0.3')
+        d3.selectAll('.spg-group-' + i).style('opacity', '1')
+    })
+
+    d3.selectAll('#segment .spg-arc').on('mouseout', function(d, i){
+        d3.selectAll('#segment .spg-color').style('opacity', '1')
+
+    })
+
+    /**
+      * Hover effect for ArgGraph
+      */
+    d3.selectAll('#arcgraph .ag-arc').on('mouseover', function(d, i){
+        d3.selectAll('#arcgraph .ag-color').style('opacity', '0.3')
+        d3.selectAll('.ag-group-' + i).style('opacity', '1')
+    })
+
+    d3.selectAll('#arcgraph .ag-arc').on('mouseout', function(d, i){
+        d3.selectAll('#arcgraph .ag-color').style('opacity', '1')
+
+    })
+
+    </script>
 </body>
 </html>
