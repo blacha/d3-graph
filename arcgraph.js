@@ -77,9 +77,11 @@ ArcGraph.prototype = {
             .attr("transform", "translate(" + (this.r + me.arc.offset_x) + "," + (this.r + me.arc.offset_y) + ")");
 
         // Add the arcs
-        var paths = this.vis.selectAll('path')
-            .data(this.data)
-            .enter().append('path')
+        var graph = this.vis.selectAll('path')
+            .data(this.data);
+
+
+        graph.enter().append('path')
             .attr('d', arc)
             .attr('id', function(d, i){
                 if (d.id === undefined)
@@ -91,8 +93,7 @@ ArcGraph.prototype = {
 
         // Add the values next to the arcs
         var arc_font_size = parseInt(this.arc.width * 0.8, 10);
-        this.vis.selectAll('text').data(this.data)
-                .enter().append('text')
+        graph.enter().append('text')
                 .attr('x', 5)
                 .attr('y', function(d,i) { return me.outerRadius(i);  } )
                 .attr('dy',  arc_font_size * -0.2)
@@ -104,8 +105,7 @@ ArcGraph.prototype = {
 
         // Add the heading for the description
         var description_header_font = parseInt(this.key.height * 0.8, 10);
-        this.vis.selectAll('g').data(this.data)
-                .enter().append('text')
+        graph.enter().append('text')
                 .attr('x', this.r * 1.4)
                 .attr('y', function(d, i){ return me.descriptionLocation(i) - 5; })
                 .style("fill",  function(d, i) { return me.colors[i]; })
@@ -115,8 +115,7 @@ ArcGraph.prototype = {
                 .text(function(d, i) { return d.value2; });
 
         // Add a line under the text
-        this.vis.selectAll('g').data(this.data)
-            .enter().append('line')
+        graph.enter().append('line')
                 .attr('x1', this.r * 1.35)
                 .attr('x2', this.w * 0.95)
                 .attr('y1', function(d, i){ return me.descriptionLocation(i) - 1; } )
@@ -126,8 +125,7 @@ ArcGraph.prototype = {
 
         // Add a line under the text
         var description_font = parseInt(description_header_font * 0.5, 10);
-        this.vis.selectAll('g').data(this.data)
-            .enter().append('text')
+        graph.enter().append('text')
                 .attr('x', this.r * 1.45 + description_header_font * 2 )
                 .attr('y', function(d, i){  return me.descriptionLocation(i) - description_header_font / 3; } )
                 .style("fill", this.key.text_color )

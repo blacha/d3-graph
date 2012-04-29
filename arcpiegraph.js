@@ -73,9 +73,10 @@ ArcPieGraph.prototype = {
             .attr("transform", "translate(" + (this.r + me.arc.offset_x) + "," + (this.r + me.arc.offset_y) + ")");
 
         // Add the colored arcs
-        this.vis.selectAll('path')
-            .data(this.data)
-            .enter().append('path')
+        var graph = this.vis.selectAll('path')
+            .data(this.data);
+
+        graph.enter().append('path')
             .attr('d', arc_color)
             .attr('id', function(d, i){
                 if (d.id === undefined)
@@ -97,8 +98,7 @@ ArcPieGraph.prototype = {
             .outerRadius(function(d, i) { return me.outerRadius(i); });
 
         this.current_angle = this.arc.start_angle;
-        this.vis.selectAll('g').data(this.data)
-            .enter().append('path')
+        graph.enter().append('path')
             .attr('d', arc_grey)
             .attr('id', function(d, i){
                 if (d.id === undefined)
