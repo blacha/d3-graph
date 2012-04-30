@@ -170,6 +170,18 @@ RoundedBarGraph.prototype = {
             .text(String);
 
         if (this.line.type !== ''){
+            if (this.line.type == 'avg'){
+                var total = 0;
+                for (var j =0; j < data.length; j++){
+                    total += data[i].value;
+                }
+
+                var avg = total / data.length;
+
+                this.line.type = 'const';
+                this.line.const_val = avg;
+            }
+
             if (this.line.type == 'const'){
                 this.vis.selectAll('g')
                     .data([this.line.const_val])
