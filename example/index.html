@@ -7,6 +7,7 @@
     <script type='text/javascript' src='../arcpiegraph.js'></script>
     <script type='text/javascript' src='../arcgraph.js'></script>
     <script type='text/javascript' src='../roundedbargraph.js'></script>
+    <script type='text/javascript' src='../horizontalbargraph.js'></script>
 
     <style>
     #chart8 .ag-color-0{
@@ -18,7 +19,10 @@
     </style>
 </head>
 <body style="">
-
+    <div style="width:600px; margin:auto;">
+        <p> <a href="horizontialbargraph.html"> Horizontial Bar  Graph </a></p>
+        <div id="horbar" style=""> </div>
+    </div>
 
     <div style="width:600px; margin:auto;">
         <p> <a href="roundedbargraph.html"> Rounded Bar Graph </a></p>
@@ -36,6 +40,33 @@
 
 
     <script type="text/javascript">
+
+    var hb = {
+        width:400,
+        height: 100,
+        node: '#horbar',
+
+        bar :{
+            'height': 25,
+            'margin': 10,
+            'max': 100,
+            'background': '#dfe7e5'
+        },
+
+        line :{
+            //'percent': 0.85 // options, percent, constant, average
+            'average': true
+        },
+
+        data :[
+            {'key': '2005-7', 'value': 87 },
+            {'key': '2009', 'value': 74 },
+            {'key': '2010/11', 'value': 80 }
+        ]
+    }
+
+    hbg = new HorizontalBarGraph(hb);
+
     var rounded = {
         width: 600, // width in pixels
         height: 300, // height in pixels
@@ -103,6 +134,7 @@
             ]
     }
     ag = new ArcGraph(arcgraph)
+
     </script>
 
 
