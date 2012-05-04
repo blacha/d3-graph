@@ -6,6 +6,7 @@
     <script type='text/javascript' src='../d3.v2.min.js'></script>
     <script type='text/javascript' src='../arcpiegraph.js'></script>
     <script type='text/javascript' src='../arcgraph.js'></script>
+    <script type='text/javascript' src='../segmentpie.js'></script>
     <script type='text/javascript' src='../roundedbargraph.js'></script>
     <script type='text/javascript' src='../horizontalbargraph.js'></script>
 
@@ -20,7 +21,11 @@
 </head>
 <body style="">
     <div style="width:600px; margin:auto;">
-        <p> <a href="horizontialbargraph.html"> Horizontial Bar  Graph </a></p>
+        <p> <a href="segmentpiegraph.html"> Segment Pie Graph </a></p>
+        <div id="segpie" style=""> </div>
+    </div>
+    <div style="width:600px; margin:auto;">
+        <p> <a href="horizontialbargraph.html"> Horizontial Bar Graph </a></p>
         <div id="horbar" style=""> </div>
     </div>
 
@@ -40,6 +45,23 @@
 
 
     <script type="text/javascript">
+    var segpie = {
+        width: 150,
+        height:150,
+        node :'#segpie',
+
+        arc: {
+            margin: 15,
+            width: 50,
+        },
+        data : [
+            {'value': 36.5},
+            {'value': 63.5},
+            {'value': 22.5}
+        ]
+    };
+
+    var segpiegraph = new SegmentPieGraph(segpie);
 
     var hb = {
         width:400,
@@ -91,8 +113,7 @@
             ],
 
         line: {
-            type:'const',
-            const_val: '350'
+            'average': true, // 350,
         }
     }
     rbg = new RoundedBarGraph(rounded)
