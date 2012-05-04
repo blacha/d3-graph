@@ -9,6 +9,7 @@
     <script type='text/javascript' src='../segmentpie.js'></script>
     <script type='text/javascript' src='../roundedbargraph.js'></script>
     <script type='text/javascript' src='../horizontalbargraph.js'></script>
+    <script type='text/javascript' src='../bubblegraph.js'></script>
 
     <style>
     #chart8 .ag-color-0{
@@ -21,8 +22,17 @@
 </head>
 <body style="">
     <div style="width:600px; margin:auto;">
+        <p> <a href="bubblegraph.html"> Bubble Graph </a></p>
+        <div id="bubble" style="float:left"></div>
+        <div id="bubble2" style="float:left;"></div>
+        <br clear='both' />
+    </div>
+
+    <div style="width:600px; margin:auto;">
         <p> <a href="segmentpiegraph.html"> Segment Pie Graph </a></p>
-        <div id="segpie" style=""> </div>
+        <div id="segpie" style="float:left"></div>
+        <div id="segpie2" style="float:left;"></div>
+        <br clear='both' />
     </div>
     <div style="width:600px; margin:auto;">
         <p> <a href="horizontialbargraph.html"> Horizontial Bar Graph </a></p>
@@ -45,6 +55,39 @@
 
 
     <script type="text/javascript">
+
+    var bubble = {
+        height:200,
+        width: 200,
+        node: '#bubble',
+
+        data : [
+            {'value': 25},
+            {'value': 5},
+            {'value': 4},
+            {'value': 14},
+            {'value': 5},
+            {'value': 27},
+        ]
+    }
+    var bg = new BubbleGraph(bubble);
+
+    var bubble2 = {
+        height:200,
+        width: 200,
+        node: '#bubble2',
+
+        data : [
+            {'value': 15},
+            {'value': 5},
+            {'value': 4},
+            {'value': 14},
+            {'value': 5},
+            {'value': 7},
+        ]
+    }
+    var bg = new BubbleGraph(bubble2);
+
     var segpie = {
         width: 150,
         height:150,
@@ -63,6 +106,12 @@
 
     var segpiegraph = new SegmentPieGraph(segpie);
 
+    segpie.node ='#segpie2';
+    segpie.data = [
+            {'value': 36.5},
+            {'value': 43.5},
+        ]
+    var segpiegraph = new SegmentPieGraph(segpie);
     var hb = {
         width:400,
         height: 100,
