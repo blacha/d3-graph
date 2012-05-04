@@ -13,8 +13,6 @@ RoundedBarGraph = function(ctx){
 
 
     this.line = ctx.line || {};
-    this.line.type = this.line.type || ''; // Currently only supports avg or const
-    this.line.const_val =  this.line.const_val || 0;
     this.line.color =  this.line.color || '#cf3d96';
 
     this.chart = {};
@@ -169,22 +167,22 @@ RoundedBarGraph.prototype = {
             .attr('font-size', '12px')
             .text(String);
 
-        if (this.line.type !== ''){
-            if (this.line.type == 'avg'){
-                var total = 0;
-                for (var j =0; j < data.length; j++){
-                    total += data[i].value;
-                }
 
-                var avg = total / data.length;
+        if (this.line.percent !== undefined){
+            this.line.constant = this.line.percent * this.max;
+        }
 
-                this.line.type = 'const';
-                this.line.const_val = avg;
+        if (this.line.average !== undefined){
+            for (var j =0; j < data.length; j++){
+                this.total += data[j].value;
             }
+            var avg = this.total / data.length;
+            this.line.constant = avg;
+        }
 
-            if (this.line.type == 'const'){
-                this.vis.selectAll('g')
-                    .data([this.line.const_val])
+        if (this.line.constant !== undefined){
+                this.vis.selectAll('line')
+                    .data([this.line.constant])
                     .enter().append('line')
                     .attr('x1', this.chart.width_offset - 5)
                     .attr('x2', this.w)
@@ -194,10 +192,8 @@ RoundedBarGraph.prototype = {
                     .attr('stroke-dasharray', '10')
                     .attr('stroke-width', '3')
                     .attr('stroke', this.line.color);
-            }
+
         }
-
-
     }
 
 };
