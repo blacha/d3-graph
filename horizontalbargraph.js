@@ -41,9 +41,10 @@ HorizontalBarGraph.prototype = {
             }
         }
 
+        var l= this.data.length;
         // Check to see if the arc width is too big, if it is reduce the width of the arcs
-        if (this.data.length * this.bar.height + (this.data.length - 1) * this.bar.margin > this.h - 20){
-            this.bar.height =  (this.h - (this.data.length - 1) * this.bar.margin) / (this.data.length  + 1);
+        if ( l * this.bar.height + (l - 1) * this.bar.margin > this.h - this.bar.height){
+            this.bar.height =  (this.h - (l - 1) * this.bar.margin) / (l + 2);
         }
 
         this.bar.start = this.w * 0.2;
@@ -52,18 +53,17 @@ HorizontalBarGraph.prototype = {
 
         var me = this;
 
-        this.vis = d3.select(this.node).append("svg")
+        this.vis = d3.select(this.node).append("g")
             .attr("class", "chart")
             .attr("width", this.w)
-            .attr("height", this.h)
-            .append('g');
+            .attr("height", this.h);
 
         var rects = this.vis.selectAll('rect')
             .data(this.data);
 
         var y = d3.scale.linear()
             .domain([0, this.data.length + 1])
-            .rangeRound([0, this.h, this.bar.margin]);
+            .rangeRound([this.bar.height / 3, this.h, this.bar.margin]);
 
         var x = d3.scale.linear()
             .domain([0, 1])
@@ -72,7 +72,7 @@ HorizontalBarGraph.prototype = {
         rects.enter().append('rect')
             .attr('x', this.bar.start)
             .attr('width', this.bar.width)
-            .attr('y', function(d, i) { return y(i + 1); })
+            .attr('y', function(d, i) { return y(i); })
             .attr('height', this.bar.height)
             .attr('class', function(d, i){ return 'hb-rect-background hg-group-' + i; })
             .attr('fill', this.bar.background);
@@ -80,7 +80,7 @@ HorizontalBarGraph.prototype = {
         rects.enter().append('rect')
             .attr('x', this.bar.start)
             .attr('width', function(d, i){ return  d.value / me.bar.max * me.bar.width; })
-            .attr('y', function(d, i){ return y(i + 1); })
+            .attr('y', function(d, i){ return y(i); })
             .attr('height', this.bar.height)
             .attr('class', function(d, i) { return 'hb-rect hg-group-' + i; })
             .style('fill', function(d, i) { return me.colors[i]; });
@@ -89,11 +89,11 @@ HorizontalBarGraph.prototype = {
         rects.enter().append('text')
             .attr('x', 0)
             .attr('text-anchor', 'start')
-            .attr('y', function(d, i){ return (y(i + 1) + y(i + 2)) / 2; })
+            .attr('y', function(d, i){ return (y(i) + y(i + 1)) / 2; })
             .attr('dy', '0.2em')
             .attr('height', this.bar.height)
             .attr('text-align', 'right')
-            .attr('class', function(d, i) { return 'hb-rect hg-group-' + i; })
+            .attr('class', function(d, i) { return 'hb-rect hb-rect-text hg-group-' + i; })
             .text(function(d, i) { return d.key; });
 
         if (this.line.percent !== undefined){
@@ -116,8 +116,8 @@ HorizontalBarGraph.prototype = {
                 .enter().append('line')
                 .attr('x1', line_x_offset)
                 .attr('x2', line_x_offset)
-                .attr('y1', this.bar.height / 1.1)
-                .attr('y2', this.h)
+                .attr('y1', this.bar.height / 3)
+                .attr('y2', y(this.data.length) )
                 .attr('stroke-dasharray', '4')
                 .attr('stroke-width', '3')
                 .attr('fill', this.line.color)
@@ -132,8 +132,8 @@ HorizontalBarGraph.prototype = {
                 .enter().append('text')
                 .attr('x', line_x_offset)
                 .attr('text-anchor', 'middle')
-                .attr('dy', '-0.2em')
-                .attr('y', this.bar.height)
+                .attr('dy', '-0.4em')
+                .attr('y', this.bar.height / 3)
                 .attr('fill', this.line.color)
                 .attr('class', 'hb-line')
                 .text(String);
