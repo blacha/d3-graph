@@ -9,7 +9,7 @@ BubbleGraph = function(ctx){
     this.node =  ctx.node;
 
     this.colors = ctx.colors || ['#0093d5', '#f1b821', '#009983','#cf3d96', '#df7627', '#252', '#528', '#72f', '#444'];
-
+    this.overlap = ctx.overlap || 0.95;
     if (ctx.data !== undefined && ctx.data !== null){
         this.update_data(ctx.data);
     }
@@ -42,7 +42,6 @@ BubbleGraph.prototype = {
             .attr("height", this.h)
             .append('g');
 
-        console.log(bubble.nodes({'children':this.data}));
 
         // Add the bubbles
         var graph = this.vis.selectAll('g.bug-node')
@@ -50,14 +49,15 @@ BubbleGraph.prototype = {
                 .filter( function(d) { return !d.children; }))
             .enter().append('g')
             .attr('class', 'bug-node')
-            .attr('transform', function(d){ console.log(d); return "translate(" + d.x + "," + d.y + ")"; });
+            .attr('transform', function(d){ return "translate(" + d.x + "," + d.y + ")"; });
 
 
         graph.append('circle')
-            .attr('r', function(d) { return d.r - 2; })
+            .attr('r', function(d, i) {
+                return d.r  * me.overlap; })
             .attr('class', function(d, i) { return 'bug-bubble bug-color bug-group-' + i; })
-            .style('stroke', '#fff')
-            .style('stroke-width', '0')
+            //.style('stroke', '#fff')
+            //.style('stroke-width', '0')
             .style('fill', function(d, i) { return me.colors[i]; });
 
 
@@ -66,7 +66,7 @@ BubbleGraph.prototype = {
             .attr('dy', '0.5em')
             .attr('class', function(d, i) { return 'bug-bubble-text bug-group-' + i; })
             .style('fill', '#fff')
-            .text(function(d){ console.log(d); return Math.round(d.value); });
+            .text(function(d){ return Math.round(d.value); });
 
     }
 };
