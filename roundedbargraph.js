@@ -55,7 +55,6 @@ RoundedBarGraph.prototype = {
         if (this.data.length * (this.bar.width + this.bar.margin) > this.chart.width ){
 
             this.bar.width = (this.chart.width - this.data.length * this.bar.margin) / this.data.length;
-            console.log('too big', this.bar.width);
         }
 
         var me = this;

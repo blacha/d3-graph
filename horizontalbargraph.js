@@ -44,7 +44,6 @@ HorizontalBarGraph.prototype = {
         // Check to see if the arc width is too big, if it is reduce the width of the arcs
         if (this.data.length * this.bar.height + (this.data.length - 1) * this.bar.margin > this.h - 20){
             this.bar.height =  (this.h - (this.data.length - 1) * this.bar.margin) / (this.data.length  + 1);
-            console.log('resize bars', this.bar.height, this.h);
         }
 
         this.bar.start = this.w * 0.2;
