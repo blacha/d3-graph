@@ -13,6 +13,8 @@ HorizontalBarGraph = function(ctx){
     this.bar.height = this.bar.height || 20;
     this.bar.margin = this.bar.margin || 5;
     this.bar.max  = this.bar.max  || 0;
+    this.bar.background = this.bar.background === undefined ? true : this.bar.background;
+    this.bar.text = this.bar.text === undefined ? true : this.bar.text;
 
     this.legend = ctx.legend || {};
     this.legend.enabled = this.legend.enabled === undefined ? true : this.legend.enabled;
@@ -61,7 +63,12 @@ HorizontalBarGraph.prototype = {
             this.bar.start = 0;
         }
 
-        this.bar.end = this.w;
+        if (this.bar.text){
+            this.bar.end = this.w * 0.85;
+        } else {
+            this.bar.end = this.w;
+        }
+
         this.bar.width = this.bar.end - this.bar.start;
 
         var me = this;
@@ -100,6 +107,18 @@ HorizontalBarGraph.prototype = {
             .attr('class', function(d, i) { return 'hb-rect hg-group-' + i; })
             .style('fill', function(d, i) { return me.colors(i); });
 
+        if (this.bar.text){
+            rects.enter().append('text')
+                .attr('x', function(d, i){ return d.value / me.bar.max * me.bar.width + me.bar.start; })
+                .attr('text-anchor', 'start')
+                .attr('dx', '0.5em')
+                .attr('y', function(d, i){ return (y(i) + y(i + 1)) / 2; })
+                .attr('height', this.bar.height)
+                .attr('font-size', '8px')
+                .attr('class', function(d, i) { return 'hb-rect hb-rect-text-value hg-group-' + i; })
+                .style('fill', function(d, i) { return me.colors(i); })
+                .text(function(d, i) { return d.value; });
+        }
 
         if (this.legend.enabled){
             rects.enter().append('text')
