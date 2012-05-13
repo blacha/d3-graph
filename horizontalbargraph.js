@@ -14,6 +14,8 @@ HorizontalBarGraph = function(ctx){
     this.bar.margin = this.bar.margin || 5;
     this.bar.max  = this.bar.max  || 0;
 
+    this.legend = ctx.legend || {};
+    this.legend.enabled = this.legend.enabled === undefined ? true : this.legend.enabled;
 
     this.line = ctx.line || {};
     this.line.color = this.line.color || '#d71920';
@@ -47,7 +49,12 @@ HorizontalBarGraph.prototype = {
             this.bar.height =  (this.h - (l - 1) * this.bar.margin) / (l + 2);
         }
 
-        this.bar.start = this.w * 0.2;
+        if (this.legend.enabled){
+            this.bar.start = this.w * 0.2;
+        } else {
+            this.bar.start = 0;
+        }
+
         this.bar.end = this.w;
         this.bar.width = this.bar.end - this.bar.start;
 
@@ -83,18 +90,21 @@ HorizontalBarGraph.prototype = {
             .attr('y', function(d, i){ return y(i); })
             .attr('height', this.bar.height)
             .attr('class', function(d, i) { return 'hb-rect hg-group-' + i; })
-            .style('fill', function(d, i) { return me.colors[i]; });
+            .style('fill', function(d, i) { return me.colors(i); });
 
 
-        rects.enter().append('text')
-            .attr('x', 0)
-            .attr('text-anchor', 'start')
-            .attr('y', function(d, i){ return (y(i) + y(i + 1)) / 2; })
-            .attr('dy', '0.2em')
-            .attr('height', this.bar.height)
-            .attr('text-align', 'right')
-            .attr('class', function(d, i) { return 'hb-rect hb-rect-text hg-group-' + i; })
-            .text(function(d, i) { return d.key; });
+        if (this.legend.enabled){
+            rects.enter().append('text')
+                .attr('x', 0)
+                .attr('text-anchor', 'start')
+                .attr('y', function(d, i){ return (y(i) + y(i + 1)) / 2; })
+                .attr('dy', '0.2em')
+                .attr('height', this.bar.height)
+                .attr('text-align', 'right')
+                .attr('class', function(d, i) { return 'hb-rect hb-rect-text hg-group-' + i; })
+                .text(function(d, i) { return d.key; });
+        }
+
 
         if (this.line.percent !== undefined){
             this.line.constant = this.line.percent * this.bar.max;
