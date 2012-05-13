@@ -25,6 +25,12 @@ ArcPieGraph = function(ctx){
 
     this.colors = ctx.colors || ['#0093d5', '#f1b821', '#009983','#cf3d96', '#df7627', '#252', '#528', '#72f', '#444'];
 
+    if (typeof this.colors != 'function'){
+        this._colorData = this.colors;
+        this.colors = function(d,i){
+            return this._colorData[i];
+        };
+    }
     if (ctx.data !== undefined && ctx.data !== null){
         this.update_data(ctx.data);
     }
@@ -84,7 +90,7 @@ ArcPieGraph.prototype = {
                 return d.id;
             })
             .attr('class', function(d, i) { return 'ag-arc ag-arc-color ag-color-' + i; })
-            .style('fill', function(d, i) { return me.colors[i]; });
+            .style('fill', function(d, i) { return me.colors(d, i); });
 
         var arc_grey = d3.svg.arc()
             .startAngle(function(d, i) {
