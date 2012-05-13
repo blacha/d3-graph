@@ -24,14 +24,21 @@ HorizontalBarGraph = function(ctx){
     this.colors = ctx.colors || ['#658e82', '#658e82', '#658e82'];
     if (typeof this.colors !== 'function'){
         this._colordata = this.colors;
-        this.colors = function(i){
+        this.colors = function(d, i){
             return this._colordata[i];
         };
     }
 
+
     if (ctx.data !== undefined && ctx.data !== null){
+        if (ctx.data.length > 0 && ctx.data[0].values !== undefined){
+            this.stacked_bar = true;
+        } else {
+            this.stacked_bar = false;
+        }
         this.update_data(ctx.data);
     }
+
 };
 
 HorizontalBarGraph.prototype = {
@@ -39,14 +46,26 @@ HorizontalBarGraph.prototype = {
     update_data: function(data){
         if (data.length === undefined || data.length === 0) { return; }
         this.data = data;
-        var i;
+        var i, j;
 
         if (this.bar.max === 0){
             this.bar.max = 0;
 
-            for (i = 0 ; i< this.data.length; i++){
-                if (this.bar.max < this.data[i].value){
-                    this.bar.max = this.data[i].value;
+            if (this.stacked_bar){
+                for (i = 0 ; i< this.data.length; i++){
+                    var n =  this.data[i];
+                    var total = n.values[n.values.length - 1];
+
+                    if (this.bar.max < total){
+                        this.bar.max = total;
+                    }
+                }
+
+            }else{
+                for (i = 0 ; i< this.data.length; i++){
+                    if (this.bar.max < this.data[i].value){
+                        this.bar.max = this.data[i].value;
+                    }
                 }
             }
         }
@@ -64,7 +83,7 @@ HorizontalBarGraph.prototype = {
         }
 
         if (this.bar.text){
-            this.bar.end = this.w * 0.85;
+            this.bar.end = this.w * 0.80;
         } else {
             this.bar.end = this.w;
         }
@@ -98,14 +117,31 @@ HorizontalBarGraph.prototype = {
                 .attr('class', function(d, i){ return 'hb-rect-background hg-group-' + i; })
                 .attr('fill', this.bar.background);
         }
+        if (this.stacked_bar){
+            for (i = 0; i < this.data.length; i++){
+                var tmpdata = this.data[i].values;
+                tmpdata.reverse();
+                console.log(tmpdata)
+                this.vis.selectAll('rect.hg-bar-group-' + i).data(tmpdata)
+                    .enter().append('rect')
+                    .attr('x', this.bar.start)
+                    .attr('width', function(d, i){ return  d / me.bar.max * me.bar.width; })
+                    .attr('y', function(d, j){ return y(i); })
+                    .attr('height', this.bar.height)
+                    .attr('class', function(d, j) { return 'hb-rect hg-bar-group-' + i +' hg-group-' + j })
+                    .style('fill', function(d, j) { return me.colors(d, i, j); });
+            }
 
-        rects.enter().append('rect')
-            .attr('x', this.bar.start)
-            .attr('width', function(d, i){ return  d.value / me.bar.max * me.bar.width; })
-            .attr('y', function(d, i){ return y(i); })
-            .attr('height', this.bar.height)
-            .attr('class', function(d, i) { return 'hb-rect hg-group-' + i; })
-            .style('fill', function(d, i) { return me.colors(i); });
+        }else{
+            rects.enter().append('rect')
+                .attr('x', this.bar.start)
+                .attr('width', function(d, i){ return  d.value / me.bar.max * me.bar.width; })
+                .attr('y', function(d, i){ return y(i); })
+                .attr('height', this.bar.height)
+                .attr('class', function(d, i) { return 'hb-rect hg-group-' + i; })
+                .style('fill', function(d, i) { return me.colors(d, i); });
+        }
+
 
         if (this.bar.text){
             rects.enter().append('text')
@@ -116,7 +152,7 @@ HorizontalBarGraph.prototype = {
                 .attr('height', this.bar.height)
                 .attr('font-size', '8px')
                 .attr('class', function(d, i) { return 'hb-rect hb-rect-text-value hg-group-' + i; })
-                .style('fill', function(d, i) { return me.colors(i); })
+                .style('fill', function(d, i) { return me.colors(d, i); })
                 .text(function(d, i) { return d.value; });
         }
 
