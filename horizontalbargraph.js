@@ -20,6 +20,12 @@ HorizontalBarGraph = function(ctx){
     this.line = ctx.line || {};
     this.line.color = this.line.color || '#d71920';
     this.colors = ctx.colors || ['#658e82', '#658e82', '#658e82'];
+    if (typeof this.colors !== 'function'){
+        this._colordata = this.colors;
+        this.colors = function(i){
+            return this._colordata[i];
+        };
+    }
 
     if (ctx.data !== undefined && ctx.data !== null){
         this.update_data(ctx.data);
@@ -76,13 +82,15 @@ HorizontalBarGraph.prototype = {
             .domain([0, 1])
             .range([this.bar.start, this.bar.end]);
 
-        rects.enter().append('rect')
-            .attr('x', this.bar.start)
-            .attr('width', this.bar.width)
-            .attr('y', function(d, i) { return y(i); })
-            .attr('height', this.bar.height)
-            .attr('class', function(d, i){ return 'hb-rect-background hg-group-' + i; })
-            .attr('fill', this.bar.background);
+        if (this.bar.background !== false){
+            rects.enter().append('rect')
+                .attr('x', this.bar.start)
+                .attr('width', this.bar.width)
+                .attr('y', function(d, i) { return y(i); })
+                .attr('height', this.bar.height)
+                .attr('class', function(d, i){ return 'hb-rect-background hg-group-' + i; })
+                .attr('fill', this.bar.background);
+        }
 
         rects.enter().append('rect')
             .attr('x', this.bar.start)
