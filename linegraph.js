@@ -15,6 +15,7 @@ LineGraph = function(ctx){
     this.line.dots = this.ck(this.line.dots, true, this.line.dots);
     this.line.min = this.ck(this.line.min, 0, this.line.min);
     this.line.max = this.ck(this.line.max, 0, this.line.max);
+    this.line.rotate = this.ck(this.line.rotate, -90, this.line.rotate);
 
     this.x_axis = this.ck(ctx.x_axis, true, ctx.x_axis);
     this.y_axis = this.ck(ctx.y_axis, true, ctx.y_axis);
@@ -101,9 +102,10 @@ LineGraph.prototype = {
             .data(this.graph_data)
             .enter().append('path')
             .attr('d', line)
+            .attr('class', 'lg-line')
             .style('stroke', me.colors)
-            .style('stroke-width', 1.5)
-            .style('fill', '#fff');
+            .style('stroke-width', 2)
+            .style('fill-opacity', '0');
 
 
         var ticks = this.vis.selectAll('.lg-tick-y')
@@ -148,27 +150,37 @@ LineGraph.prototype = {
 
         if (this.x_axis){
              ticks.append('g')
-             .attr('transform', 'rotate(-90)')
+             .attr('transform', 'rotate(' + this.line.rotate + ')')
                 .append('text')
                .text(function(d) { return d; } )
                .attr('text-anchor', 'end')
                .attr('dy', '0.25em')
                .attr('dx', '-0.5em')
                .style('fill', '#777')
-               .attr('class', 'lg-tick-text');
+               .attr('class', function(d, i) {
+                    var output = 'lg-tick-text';
+                    if (i === 0){
+                        output += ' lg-tick-first';
+                    }
+                    if (i == me.keys.length -1){
+                        output += ' lg-tick.last';
+                    }
+                    return output;
+                });
        }
 
        if (this.line.dots){
             var sx = function (d, i) { return me.colors(gd, gi); };
             for(var gi =0 ; gi < this.graph_data.length; gi++){
                 var gd = this.graph_data[gi];
-                this.vis.selectAll('.lg-point')
+                this.vis.selectAll('.lg-point-' + gi)
                     .data(gd)
                     .enter().append('circle')
                     .style('stroke', sx)
+                    .attr('class', 'lg-point')
                     .attr('cx', xi)
                     .attr('cy', yd)
-                    .attr('r', 3)
+                    .attr('r', 2)
                     .style('stroke-width', 2)
                     .style('fill', '#fff');
             }
