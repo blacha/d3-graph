@@ -15,7 +15,12 @@ LineGraph = function(ctx){
     this.line.dots = this.ck(this.line.dots, true, this.line.dots);
     this.line.min = this.ck(this.line.min, 0, this.line.min);
     this.line.max = this.ck(this.line.max, 0, this.line.max);
-    this.line.rotate = this.ck(this.line.rotate, -90, this.line.rotate);
+
+    this.xaxis = ctx.xaxis || {};
+    this.xaxis.translate = this.xaxis.translate || {};
+    this.xaxis.translate.rotate = this.ck(this.xaxis.translate.rotate, -90, this.xaxis.translate.rotate);
+    this.xaxis.translate.x = this.ck(this.xaxis.translate.x, 0, this.xaxis.translate.x);
+    this.xaxis.translate.y = this.ck(this.xaxis.translate.y, 0, this.xaxis.translate.y);
 
     this.x_axis = this.ck(ctx.x_axis, true, ctx.x_axis);
     this.y_axis = this.ck(ctx.y_axis, true, ctx.y_axis);
@@ -70,7 +75,7 @@ LineGraph.prototype = {
 
 
         this.line.start = this.y_axis === true ? this.w * 0.15 : 0;
-        this.line.end = this.w - 10;
+        this.line.end = this.w * 0.95;
 
         this.line.bottom = this.x_axis === true ? this.h * 0.6 : this.h;
         this.line.top = 15;
@@ -138,7 +143,8 @@ LineGraph.prototype = {
 
         if (this.x_axis){
              ticks.append('g')
-             .attr('transform', 'rotate(' + this.line.rotate + ')')
+             .attr('transform', 'translate(' + this.xaxis.translate.x + ',' + this.xaxis.translate.y  + ')' +
+                                'rotate(' + this.xaxis.translate.rotate + ')')
                 .append('text')
                .text(function(d) { return d; } )
                .attr('text-anchor', 'end')
@@ -151,7 +157,7 @@ LineGraph.prototype = {
                         output += ' lg-tick-first';
                     }
                     if (i == me.keys.length -1){
-                        output += ' lg-tick.last';
+                        output += ' lg-tick-last';
                     }
                     return output;
                 });
