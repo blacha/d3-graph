@@ -23,9 +23,9 @@ HorizontalBarGraph = function(ctx){
     this.line.color = this.line.color || '#d71920';
     this.colors = ctx.colors || ['#658e82', '#658e82', '#658e82'];
     if (typeof this.colors !== 'function'){
-        this._colordata = this.colors;
-        this.colors = function(d, i){
-            return this._colordata[i];
+        var color_data = this.colors;
+        this.colors = function(d,i){
+            return color_data[i];
         };
     }
 
@@ -121,7 +121,7 @@ HorizontalBarGraph.prototype = {
             for (i = 0; i < this.data.length; i++){
                 var tmpdata = this.data[i].values;
                 tmpdata.reverse();
-                console.log(tmpdata)
+
                 this.vis.selectAll('rect.hg-bar-group-' + i).data(tmpdata)
                     .enter().append('rect')
                     .attr('x', this.bar.start)

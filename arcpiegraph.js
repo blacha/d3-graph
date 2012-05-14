@@ -26,9 +26,9 @@ ArcPieGraph = function(ctx){
     this.colors = ctx.colors || ['#0093d5', '#f1b821', '#009983','#cf3d96', '#df7627', '#252', '#528', '#72f', '#444'];
 
     if (typeof this.colors != 'function'){
-        this._colorData = this.colors;
+        var color_data = this.colors;
         this.colors = function(d,i){
-            return this._colorData[i];
+            return color_data[i];
         };
     }
     if (ctx.data !== undefined && ctx.data !== null){
