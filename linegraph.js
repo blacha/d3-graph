@@ -96,18 +96,6 @@ LineGraph.prototype = {
             .attr("height", this.h)
             .append('g');
 
-
-        // Add the lines
-        this.vis.selectAll('path')
-            .data(this.graph_data)
-            .enter().append('path')
-            .attr('d', line)
-            .attr('class', 'lg-line')
-            .style('stroke', me.colors)
-            .style('stroke-width', 2)
-            .style('fill-opacity', '0');
-
-
         var ticks = this.vis.selectAll('.lg-tick-y')
             .data(y.ticks(4))
             .enter().append('g')
@@ -168,6 +156,16 @@ LineGraph.prototype = {
                     return output;
                 });
        }
+
+               // Add the lines
+        this.vis.selectAll('path')
+            .data(this.graph_data)
+            .enter().append('path')
+            .attr('d', line)
+            .attr('class', 'lg-line')
+            .style('stroke', me.colors)
+            .style('stroke-width', 2)
+            .style('fill-opacity', '0');
 
        if (this.line.dots){
             var sx = function (d, i) { return me.colors(gd, gi); };
