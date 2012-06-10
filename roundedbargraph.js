@@ -58,6 +58,7 @@ RoundedBarGraph.prototype = {
         }
 
         var me = this;
+        d3.select(this.node).selectAll('.chart').remove();
 
         this.vis = d3.select(this.node).append("svg")
             .attr("class", "chart")
@@ -144,9 +145,8 @@ RoundedBarGraph.prototype = {
         // add the x series
         bg.enter().append('text')
             .attr('x', function(d, i){ return x(i) + me.chart.width_offset + me.bar.margin * i + me.bar.width / 2; })
-            .attr('y', function(d, i){ return me.h * 0.9; })
-            .attr('dx', 0)
-            .attr('dy', -10)
+            .attr('y', function(d, i){ return me.h * 0.9 - 10; })
+
             .attr('class', function(d, i){ return  'rb-series rb-series-' + i; })
             .attr('text-anchor', 'middle')
             .attr('font-size', '13px')
