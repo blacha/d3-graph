@@ -13,14 +13,22 @@ SegmentPieGraph = function(ctx){
 
     // Arc config
     this.arc = ctx.arc || {};
+    this.arc.start_angle = this.arc.start_angle || 0;
     this.arc.width = this.arc.width || 40;
     this.arc.offset_x = this.arc.offset_x || 0; // x offset of the graph
     this.arc.offset_y = this.arc.offset_y || 0; // y offset of the graph
     this.arc.margin = this.arc.margin || 0.1; // margin between the arcs
 
-
+    this.total = ctx.total || 0;
     this.colors = ctx.colors || ['#009983','#cf3d96', '#df7627', '#252', '#528', '#72f', '#444'];
 
+    if (typeof this.colors != 'function'){
+        var color_data = this.colors;
+        this.colors = function(d, i){
+            return color_data[i];
+        };
+
+    }
     if (ctx.data !== undefined && ctx.data !== null){
         this.update_data(ctx.data);
     }
@@ -32,13 +40,16 @@ SegmentPieGraph.prototype = {
         if (data.length === undefined || data.length === 0) { return; }
         this.data = data;
 
-        var total = 0;
-        for (var i =0 ; i < this.data.length; i ++){
-            total += this.data[i].value;
+        var total = this.total;
+
+        if (total === undefined || total <= 0){
+            for (var i =0 ; i < this.data.length; i ++){
+                total += this.data[i].value;
+            }
         }
 
         var me = this;
-        me.current_angle = 0;
+        me.current_angle = this.arc.start_angle;
         var arc = d3.svg.arc()
             .startAngle(function(d, i) { return me.current_angle; })
             .endAngle(function(d, i) {
@@ -65,7 +76,7 @@ SegmentPieGraph.prototype = {
             .attr('class', function(d, i) { return 'spg-arc spg-color spg-group-' + i +' spg-arc-' + i; })
             .style('stroke', '#fff')
             .style('stroke-width', this.arc.margin / 2)
-            .style('fill', function(d, i) { return me.colors[i]; });
+            .style('fill', this.colors);
 
             paths.enter().append('text')
             .attr("transform", function(d, i) { return "translate(" + arc.centroid(d, i) + ")"; })
