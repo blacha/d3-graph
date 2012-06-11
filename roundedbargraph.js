@@ -257,7 +257,7 @@ RoundedBarGraph.prototype = {
                     .attr('y2', function(d) { return me.h - y(d) -0.5 - me.chart.height_offset; });
 
         }else {
-            this.line.selectAll('line.bw-cosntant-line').remove();
+            this.line_g.selectAll('line').remove();
         }
     }
 

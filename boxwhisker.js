@@ -310,7 +310,7 @@ BoxWhisker.prototype = {
                     .attr('y2', function(d) { return  y(d) ; });
 
         }else {
-            this.line.selectAll('line.bw-cosntant-line').remove();
+            this.line_g.selectAll('line').remove();
         }
 
     }
