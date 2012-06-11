@@ -50,24 +50,33 @@ RoundedBarGraph.prototype = {
             }
         }
         this.max = this.max * 1.5;
-
+        this.bar.width_new = this.bar.width;
         // Check to see if the bar width is too big, if it is reduce the width of the arcs
         if (this.data.length * (this.bar.width + this.bar.margin) > this.chart.width ){
-
-            this.bar.width = (this.chart.width - this.data.length * this.bar.margin) / this.data.length;
+            this.bar.width_new = (this.chart.width - this.data.length * this.bar.margin) / this.data.length;
         }
 
         var me = this;
-        d3.select(this.node).selectAll('.chart').remove();
 
-        this.vis = d3.select(this.node).append("svg")
-            .attr("class", "chart")
-            .attr("width", this.w)
-            .attr("height", this.h)
-            .append('g');
+
+        this.vis = d3.select(this.node).select('g.bar-chart');
+        if (this.vis.empty()){
+            this.vis = d3.select(this.node).append("svg")
+                .attr("class", "chart")
+                .attr("width", this.w)
+                .attr("height", this.h)
+                .append('g')
+                .attr('class', 'bar-chart');
+                            d3.select(this.node).append('g')
+                    .attr('class','bw-line-g')
+                    .attr("width", this.w)
+                    .attr("height", this.h);
+        }
+
+        this.line_g = d3.select(this.node).select('g.bw-line-g') ;
 
         // Add the colored arcs
-        var bg = this.vis.selectAll('path')
+        var bg = this.vis.selectAll('rect')
             .data(this.data);
 
         var y = d3.scale.linear()
@@ -76,22 +85,36 @@ RoundedBarGraph.prototype = {
 
         var x = d3.scale.linear()
             .domain([0, 1])
-            .range([0, this.bar.width]);
+            .range([0, this.bar.width_new]);
 
-        bg.enter().append('rect')
+        var rects = this.vis.selectAll('rect.rb-bar-main')
+                    .data(this.data);
+
+        rects.enter().append('rect')
+            .attr('class', function(d, i){ return  'rb-bar rb-bar-main rb-bar-' + i; })
             .attr('x', function(d, i){ return x(i) + me.chart.width_offset + me.bar.margin * i; })
             .attr('rx', this.bar.rounding) // this unfortuantly rounds the entire rectangle :(
-            .attr('width', this.bar.width)
+            .attr('width', this.bar.width_new)
+            .attr('y', me.h - me.chart.height_offset)
+            .transition().duration(1000)
             .attr('y', function(d, i) { return me.h - y(d.value) - 0.5 - me.chart.height_offset; })
             .attr('height',  function(d, i) { return y(d.value); } )
-            .attr('fill', me.bar.color)
-            .attr('class', function(d, i){ return  'rb-bar rb-bar-' + i; });
+            .attr('fill', me.bar.color);
+
+        rects.transition().duration(1000)
+            .attr('y', me.h - me.chart.height_offset)
+            .attr('width', this.bar.width_new)
+            .attr('x', function(d, i){ return x(i) + me.chart.width_offset + me.bar.margin * i; })
+            .attr('height',  function(d, i) { return y(d.value); } )
+            .attr('y', function(d, i) { return me.h - y(d.value) - 0.5 - me.chart.height_offset; });
+
+        rects.exit().remove();
 
         if (this.bar.rounding > 0 ){
             // re-square the bottom
             bg.enter().append('rect')
                 .attr('x', function(d, i){ return x(i) + me.chart.width_offset + me.bar.margin * i; })
-                .attr('width', this.bar.width)
+                .attr('width', this.bar.width_new)
                 .attr('y', function(d, i) {
                     var tmpy = me.h - me.chart.height_offset - me.bar.rounding;
                     var offy = me.h - y(d.value) - 0.5 - me.chart.height_offset;
@@ -116,7 +139,7 @@ RoundedBarGraph.prototype = {
             // re-square the top left
             bg.enter().append('rect')
                 .attr('x', function(d, i){ return x(i) + me.chart.width_offset + me.bar.margin * i; })
-                .attr('width', this.bar.width / 2)
+                .attr('width', this.bar.width_new / 2)
                 .attr('y', function(d, i) { return me.h - y(d.value) - 0.5 - me.chart.height_offset; })
                 .attr('height', function(d, i){
                     var ytmp = me.h - y(d.value) - 0.5 - me.chart.height_offset +  me.bar.rounding;
@@ -130,9 +153,12 @@ RoundedBarGraph.prototype = {
                 .attr('class', function(d, i){ return  'rb-bar rb-bar-top-square rb-bar-' + i; });
         }
 
+        var texts = this.vis.selectAll('text.rb-bar-text')
+                    .data(this.data);
         // add the text above the bars
-        bg.enter().append('text')
-            .attr('x', function(d, i){ return x(i) + me.chart.width_offset + me.bar.margin * i + me.bar.width / 2; })
+        texts.enter()
+            .append('text')
+            .attr('x', function(d, i){ return x(i) + me.chart.width_offset + me.bar.margin * i + me.bar.width_new / 2; })
             .attr('y', function(d, i){ return me.h - y(d.value) -0.5 - me.chart.height_offset; })
             .attr('dx', 0)
             .attr('dy', -5)
@@ -142,15 +168,46 @@ RoundedBarGraph.prototype = {
             .attr('fill', me.bar.color)
             .text(function(d){ return d.value; });
 
-        // add the x series
-        bg.enter().append('text')
-            .attr('x', function(d, i){ return x(i) + me.chart.width_offset + me.bar.margin * i + me.bar.width / 2; })
-            .attr('y', function(d, i){ return me.h * 0.9 - 10; })
+        texts.transition().duration(1000)
+            .attr('x', function(d, i){ return x(i) + me.chart.width_offset + me.bar.margin * i + me.bar.width_new / 2; })
+            .attr('y', function(d, i){ return me.h - y(d.value) -0.5 - me.chart.height_offset; })
+            .attr('dx', 0)
+            .attr('dy', -5)
+            .text(function(d){ return d.value; });
 
-            .attr('class', function(d, i){ return  'rb-series rb-series-' + i; })
-            .attr('text-anchor', 'middle')
+        texts.exit().remove();
+
+
+        texts = this.vis.selectAll('g.rb-series')
+                    .data(this.data);
+        // add the x series
+        texts.enter().append('g')
+        .attr('transform', function(d,i) {
+                var x_pos = x(i) + me.chart.width_offset + me.bar.margin * i + me.bar.width_new / 2 + 5;
+                var y_pos = me.h * 0.9 - 45;
+            return 'translate(' + x_pos + ',' + y_pos + ')';})
+        .attr('class', function(d, i){ return  'rb-series rb-series-' + i; })
+            .append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('class', function(d, i){ return  'rb-series-text rb-series-text-' + i; })
+            .attr('text-anchor', 'end')
             .attr('font-size', '13px')
             .text(function(d){ return d.series; });
+
+        texts.transition().duration(1000)
+             .attr('transform', function(d,i) {
+                            var x_pos = x(i) + me.chart.width_offset + me.bar.margin * i + me.bar.width_new / 2 + 5;
+                            var y_pos = me.h * 0.9 - 45;
+                        return 'translate(' + x_pos + ',' + y_pos + ')';});
+
+        texts.exit().remove();
+
+        texts = this.vis.selectAll('text.rb-series-text')
+                    .data(this.data);
+        texts.transition().duration(1000)
+            .text(function(d){ return d.series; });
+
+        texts.exit().remove();
 
         yseries = d3.scale.linear()
             .domain([0, this.max])
@@ -179,19 +236,28 @@ RoundedBarGraph.prototype = {
             this.line.constant = avg;
         }
 
+
         if (this.line.constant !== undefined){
-                this.vis.selectAll('line')
-                    .data([this.line.constant])
-                    .enter().append('line')
+                var const_line = this.line_g.selectAll('line');
+                //const_line.remove();
+                const_line = const_line.data([this.line.constant]);
+
+                const_line.enter().append('line')
                     .attr('x1', this.chart.width_offset - 5)
                     .attr('x2', this.w)
                     .attr('y1', function(d) { return me.h - y(d) -0.5 - me.chart.height_offset; })
                     .attr('y2', function(d) { return me.h - y(d) -0.5 - me.chart.height_offset; })
                     .attr('class', 'rb-line')
-                    .attr('stroke-dasharray', '10')
-                    .attr('stroke-width', '3')
+                    .attr('stroke-dasharray', '3')
+                    .attr('stroke-width', '2')
                     .attr('stroke', this.line.color);
 
+                const_line.transition().duration(1000)
+                    .attr('y1', function(d) { return me.h - y(d) -0.5 - me.chart.height_offset; })
+                    .attr('y2', function(d) { return me.h - y(d) -0.5 - me.chart.height_offset; });
+
+        }else {
+            this.line.selectAll('line.bw-cosntant-line').remove();
         }
     }
 
