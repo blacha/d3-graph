@@ -223,33 +223,34 @@ BoxWhisker.prototype = {
 
         var text_max = this.vis.selectAll('text.bw-text-max').data(this.data);
         text_max.enter().append('text')
-            .attr('x', function(d, i){ return x(i) + me.bar.width;})
-            .attr('dx', '0.5em')
-            .attr('dy', '0.4em')
+            .attr('x', function(d, i){ return x(i) + me.bar.width /2 ;})
+            .attr('dy', '-0.75em')
+            .attr('text-anchor', 'middle')
             .attr('y', function(d, i){ return y(d.max.value);})
             .attr('class', function(d, i){ return 'bw-text bw-text-max bw-group-' + i;})
             .text( function(d,i) { return d.max.label; });
         text_max.exit().remove();
         text_max.transition().duration(this.duration  / 2)
-            .attr('x', function(d, i){ return x(i) + me.bar.width;})
-            .attr('dx', '0.5em')
-            .attr('dy', '0.4em')
+            .attr('x', function(d, i){ return x(i) + me.bar.width / 2;})
+
+            .attr('dy', '-0.75em')
+            .attr('text-anchor', 'middle')
             .attr('y', function(d, i){ return y(d.max.value);})
             .text( function(d,i) { return d.max.label; });
 
         var text_min = this.vis.selectAll('text.bw-text-min').data(this.data);
         text_min.enter().append('text')
-            .attr('x', function(d, i){ return x(i) + me.bar.width;})
-            .attr('dx', '0.5em')
-            .attr('dy', '0.4em')
+            .attr('x', function(d, i){ return x(i) + me.bar.width / 2;})
+            .attr('dy', '1.5em')
+            .attr('text-anchor', 'middle')
             .attr('y', function(d, i){ return y(d.min.value);})
             .attr('class', function(d, i){ return 'bw-text bw-text-min bw-group-' + i;})
             .text( function(d,i) { return d.min.label; });
 
         text_min.transition().duration(this.duration  / 2)
-            .attr('x', function(d, i){ return x(i) + me.bar.width;})
-            .attr('dx', '0.5em')
-            .attr('dy', '0.4em')
+            .attr('x', function(d, i){ return x(i) + me.bar.width / 2;})
+            .attr('dy', '1.5em')
+            .attr('text-anchor', 'middle')
             .text( function(d,i) { return d.min.label; })
             .attr('y', function(d, i){ return y(d.min.value);});
 
