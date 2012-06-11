@@ -59,26 +59,55 @@ SegmentPieGraph.prototype = {
             .innerRadius(this.r - this.arc.width)
             .outerRadius(this.r);
 
+        me.end_angle = this.arc.start_angle;
+        var arc_end = d3.svg.arc()
+            .startAngle(function(d, i) { return me.end_angle; })
+            .endAngle(function(d, i) {
+                me.end_angle = d.value / total * Math.PI * 2 + me.end_angle ;
+                return me.end_angle;
+            })
+            .innerRadius(this.r - this.arc.width)
+            .outerRadius(this.r);
 
-        this.vis = d3.select(this.node).append("svg")
-            .attr("class", "chart")
-            .attr("width", this.w)
-            .attr("height", this.h)
-            .append('g')
-            .attr("transform", "translate(" + (this.r + me.arc.offset_x) + "," + (this.r + me.arc.offset_y) + ")");
+        this.vis = d3.select(this.node).select('g.chart');
+        if (this.vis.empty()){
+            this.vis =  d3.select(this.node).append("svg")
+                .attr("class", "chart")
+                .attr("width", this.w)
+                .attr("height", this.h)
+                .append('g')
+                .attr('class', 'chart')
+                .attr("transform", "translate(" + (this.r + me.arc.offset_x) + "," + (this.r + me.arc.offset_y) + ")");
+        }
 
         // Add the arcs
-        var paths = this.vis.selectAll('path')
+        var paths = this.vis.selectAll('path.spg-arc')
             .data(this.data);
 
-            paths.enter().append('path')
-            .attr('d', arc)
+        paths.enter().append('path')
+            //.attr('d', arc)
             .attr('class', function(d, i) { return 'spg-arc spg-color spg-group-' + i +' spg-arc-' + i; })
             .style('stroke', '#fff')
             .style('stroke-width', this.arc.margin / 2)
             .style('fill', this.colors);
 
-            paths.enter().append('text')
+        paths
+            .attr('d', arc)
+            .style('opacity', 0)
+            .transition()
+            .duration(function(d, i){ return i / me.data.length * 2000;})
+            .style('opacity', 1)
+            .attr('class', function(d, i) { return 'spg-arc spg-color spg-group-' + i +' spg-arc-' + i; })
+            .style('stroke', '#fff')
+            .style('stroke-width', this.arc.margin / 2)
+            .style('fill', this.colors);
+
+        paths.exit().transition()
+            .duration(250)
+            .style('opacity', 0);
+
+        var text = this.vis.selectAll('path.spg-arc-text').data(this.data);
+        text.enter().append('text')
             .attr("transform", function(d, i) { return "translate(" + arc.centroid(d, i) + ")"; })
                 .attr('text-anchor', 'middle')
                 .attr('dy', '0.25em')
