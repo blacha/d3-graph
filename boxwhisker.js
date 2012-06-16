@@ -37,17 +37,9 @@ BoxWhisker.prototype = {
             this.bar.width =  (this.w - (l - 1) * this.bar.margin) / (l + 2);
         }
 
-        if (this.legend.enabled){
-            this.bar.start = this.w * 0.2;
-        } else {
-            this.bar.start = 20;
-        }
+        this.bar.start = 25;
+        this.bar.end = this.w;
 
-        if (this.bar.text){
-            this.bar.end = this.w * 0.85;
-        } else {
-            this.bar.end = this.w;
-        }
 
         var me = this;
 
@@ -264,7 +256,7 @@ BoxWhisker.prototype = {
             .attr('dy', '4em')
             .attr('y', function(d, i){ return y(0); })
             .attr('class', function(d, i){ return 'bw-text bw-text-label bw-group-' + i;})
-            .text( function(d,i) { return d.region; });
+            .text( function(d,i) { return d.name; });
 
         text_label.transition().duration(this.duration  / 2)
             .attr('x', function(d, i){ return x(i) + me.bar.width / 2;})
@@ -272,7 +264,7 @@ BoxWhisker.prototype = {
             .attr('text-anchor', 'middle')
             .attr('dy', '4em')
             .attr('y', function(d, i){ return y(0); })
-            .text( function(d,i) { return d.region; });
+            .text( function(d,i) { return d.name; });
         text_label.exit().remove();
 
 
@@ -294,7 +286,7 @@ BoxWhisker.prototype = {
                 const_line = const_line.data([this.line.constant]);
 
                 const_line.enter().append('line')
-                    .attr('x1', -60)
+                    .attr('x1', -30)
                     .attr('y1', function(d) { return  y(d) ; })
                     .attr('y2', function(d) { return  y(d) ; })
                     .attr('class', 'bw-constant-line')
