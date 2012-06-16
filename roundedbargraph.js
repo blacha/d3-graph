@@ -67,10 +67,11 @@ RoundedBarGraph.prototype = {
                 .attr("height", this.h)
                 .append('g')
                 .attr('class', 'bar-chart');
-                            d3.select(this.node).append('g')
-                    .attr('class','bw-line-g')
-                    .attr("width", this.w)
-                    .attr("height", this.h);
+
+            d3.select(this.node).append('g')
+                .attr('class','bw-line-g')
+                .attr("width", this.w)
+                .attr("height", this.h);
         }
 
         this.line_g = d3.select(this.node).select('g.bw-line-g') ;
