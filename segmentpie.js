@@ -63,7 +63,7 @@ SegmentPieGraph.prototype = {
             }
         }
 
-        console.log(this.data);
+
 
         var me = this;
         var arc = d3.svg.arc()
@@ -75,7 +75,6 @@ SegmentPieGraph.prototype = {
         arcTween = function(b) {
             var dx = b._value === undefined ? 0 : b._value;
             var dtotal = b._old_total === undefined ? b._total : b._old_total;
-            console.log(dx);
             var i = d3.interpolate({"value": dx, "_total": dtotal}, b);
 
             return function(t) {
