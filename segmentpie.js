@@ -22,6 +22,7 @@ SegmentPieGraph = function(ctx){
     this.total = ctx.total || 0;
     this.colors = ctx.colors || ['#009983','#cf3d96', '#df7627', '#252', '#528', '#72f', '#444'];
 
+    this.duration = ctx.duration === undefined ? 1000 : ctx.duration;
     if (typeof this.colors != 'function'){
         var color_data = this.colors;
         this.colors = function(d, i){
@@ -38,36 +39,51 @@ SegmentPieGraph.prototype = {
 
     update_data: function(data){
         if (data.length === undefined || data.length === 0) { return; }
-        this.data = data;
+        var d, i;
+        if (this.data !== undefined){
+            for (i = 0; i < this.data.length; i ++){
+                if (i > data.length){
+                    break;
+                }
+                data[i]._value = this.data[i].value;
+                data[i]._old_total = this.data[i]._total;
+            }
 
+        }
+
+        this.data = data;
         var total = this.total;
 
+
         if (total === undefined || total <= 0){
-            for (var i =0 ; i < this.data.length; i ++){
+            for (i =0 ; i < this.data.length; i ++){
+                d = this.data[i];
+                d._total = total;
                 total += this.data[i].value;
             }
         }
 
+        console.log(this.data);
+
         var me = this;
-        me.current_angle = this.arc.start_angle;
         var arc = d3.svg.arc()
-            .startAngle(function(d, i) { return me.current_angle; })
-            .endAngle(function(d, i) {
-                me.current_angle = d.value / total * Math.PI * 2 + me.current_angle ;
-                return me.current_angle;
-            })
+            .startAngle(function(d, i) { return me.arc.start_angle + d._total / total * Math.PI * 2;  })
+            .endAngle(function(d, i) { return  me.arc.start_angle + (d._total + d.value) / total * Math.PI * 2;  })
             .innerRadius(this.r - this.arc.width)
             .outerRadius(this.r);
 
-        me.end_angle = this.arc.start_angle;
-        var arc_end = d3.svg.arc()
-            .startAngle(function(d, i) { return me.end_angle; })
-            .endAngle(function(d, i) {
-                me.end_angle = d.value / total * Math.PI * 2 + me.end_angle ;
-                return me.end_angle;
-            })
-            .innerRadius(this.r - this.arc.width)
-            .outerRadius(this.r);
+        arcTween = function(b) {
+            var dx = b._value === undefined ? 0 : b._value;
+            var dtotal = b._old_total === undefined ? b._total : b._old_total;
+            console.log(dx);
+            var i = d3.interpolate({"value": dx, "_total": dtotal}, b);
+
+            return function(t) {
+                t._value = t.value;
+                return arc(i(t));
+            };
+        };
+
 
         this.vis = d3.select(this.node).select('g.chart');
         if (this.vis.empty()){
@@ -80,23 +96,23 @@ SegmentPieGraph.prototype = {
                 .attr("transform", "translate(" + (this.r + me.arc.offset_x) + "," + (this.r + me.arc.offset_y) + ")");
         }
 
+        //this.vis.selectAll('path.spg-arc').remove();
         // Add the arcs
         var paths = this.vis.selectAll('path.spg-arc')
             .data(this.data);
 
         paths.enter().append('path')
-            //.attr('d', arc)
             .attr('class', function(d, i) { return 'spg-arc spg-color spg-group-' + i +' spg-arc-' + i; })
             .style('stroke', '#fff')
             .style('stroke-width', this.arc.margin / 2)
             .style('fill', this.colors);
 
+
         paths
-            .attr('d', arc)
-            .style('opacity', 0)
             .transition()
-            .duration(function(d, i){ return i / me.data.length * 2000;})
-            .style('opacity', 1)
+            .duration(this.duration)
+            .ease("bounce")
+            .attrTween('d', arcTween)
             .attr('class', function(d, i) { return 'spg-arc spg-color spg-group-' + i +' spg-arc-' + i; })
             .style('stroke', '#fff')
             .style('stroke-width', this.arc.margin / 2)
