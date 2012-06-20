@@ -22,7 +22,7 @@ SegmentPieGraph = function(ctx){
     this.total = ctx.total || 0;
     this.colors = ctx.colors || ['#009983','#cf3d96', '#df7627', '#252', '#528', '#72f', '#444'];
 
-    this.duration = ctx.duration === undefined ? 1000 : ctx.duration;
+    this.duration = ctx.duration === undefined ? 0 : ctx.duration;
     if (typeof this.colors != 'function'){
         var color_data = this.colors;
         this.colors = function(d, i){
