@@ -28,6 +28,7 @@ RoundedBarGraph = function(ctx){
     this.bar.width = this.bar.width || 25;
     this.bar.margin = this.bar.margin || 10; // margin between the arcs
 
+    this.max = this.bar.max;
     this.colors = ctx.colors || ['#0093d5', '#f1b821', '#009983','#cf3d96', '#df7627', '#252', '#528', '#72f', '#444'];
 
     if (ctx.data !== undefined && ctx.data !== null){
@@ -41,15 +42,18 @@ RoundedBarGraph.prototype = {
         if (data.length === undefined || data.length === 0) { return; }
         this.data = data;
 
-        this.max = 0;
-        this.total = 0;
-        for (var i =0 ; i < this.data.length; i ++){
-            var val = this.data[i].value;
-            if (val > this.max){
-                this.max = val;
+
+        if (this.max === undefined){
+            this.max = 0;
+            for (var i =0 ; i < this.data.length; i ++){
+                var val = this.data[i].value;
+                if (val > this.max){
+                    this.max = val;
+                }
             }
+            this.max = this.max * 1.5;
         }
-        this.max = this.max * 1.5;
+
         this.bar.width_new = this.bar.width;
         // Check to see if the bar width is too big, if it is reduce the width of the arcs
         if (this.data.length * (this.bar.width + this.bar.margin) > this.chart.width ){
@@ -99,7 +103,7 @@ RoundedBarGraph.prototype = {
             .attr('y', me.h - me.chart.height_offset)
             .transition().duration(1000)
             .attr('y', function(d, i) { return me.h - y(d.value) - 0.5 - me.chart.height_offset; })
-            .attr('height',  function(d, i) { return y(d.value); } )
+            .attr('height',  function(d, i) {  return y(d.value); } )
             .attr('fill', me.bar.color);
 
         rects.transition().duration(1000)
@@ -242,10 +246,13 @@ RoundedBarGraph.prototype = {
                 var const_line = this.line_g.selectAll('line');
                 //const_line.remove();
                 const_line = const_line.data([this.line.constant]);
-
+                var xmax = this.data.length *  (this.bar.width + this.bar.margin) + 5;
+                if (xmax > this.w){
+                    xmax = this.w;
+                }
                 const_line.enter().append('line')
                     .attr('x1', this.chart.width_offset - 5)
-                    .attr('x2', this.w)
+                    .attr('x2', xmax)
                     .attr('y1', function(d) { return me.h - y(d) -0.5 - me.chart.height_offset; })
                     .attr('y2', function(d) { return me.h - y(d) -0.5 - me.chart.height_offset; })
                     .attr('class', 'rb-line')
@@ -254,6 +261,7 @@ RoundedBarGraph.prototype = {
                     .attr('stroke', this.line.color);
 
                 const_line.transition().duration(1000)
+                    .attr('x2', xmax)
                     .attr('y1', function(d) { return me.h - y(d) -0.5 - me.chart.height_offset; })
                     .attr('y2', function(d) { return me.h - y(d) -0.5 - me.chart.height_offset; });
 
