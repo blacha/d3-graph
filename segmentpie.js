@@ -52,15 +52,18 @@ SegmentPieGraph.prototype = {
         }
 
         this.data = data;
-        var total = this.total;
+        var total = 0;
 
 
-        if (total === undefined || total <= 0){
-            for (i =0 ; i < this.data.length; i ++){
-                d = this.data[i];
-                d._total = total;
-                total += this.data[i].value;
-            }
+        for (i =0 ; i < this.data.length; i ++){
+            d = this.data[i];
+            d._total = total;
+
+            total += this.data[i].value;
+        }
+
+        if (this.total !== undefined && this.total > 0){
+            total = this.total;
         }
 
 
@@ -110,7 +113,6 @@ SegmentPieGraph.prototype = {
         paths
             .transition()
             .duration(this.duration)
-            .ease("bounce")
             .attrTween('d', arcTween)
             .attr('class', function(d, i) { return 'spg-arc spg-color spg-group-' + i +' spg-arc-' + i; })
             .style('stroke', '#fff')
